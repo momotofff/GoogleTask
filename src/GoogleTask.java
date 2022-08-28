@@ -1,37 +1,47 @@
 import java.util.Stack;
 
-class Boo
+class StackWithMax<E extends Comparable<E>> extends Stack<E>
 {
-    int number;
-    int maximum;
-
-    Boo(int num, int max)
+    @Override
+    public E push(E item)
     {
-        this.number = num;
-        this.maximum = max;
+        if (m_maximum.empty() || m_maximum.peek().compareTo(item) < 0)
+            m_maximum.push(item);
+        else
+            m_maximum.push(m_maximum.peek());
+
+        return super.push(item);
     }
+
+    @Override
+    public E pop()
+    {
+        m_maximum.pop();
+        return super.pop();
+    }
+
+    public E getMaximum()
+    {
+        return m_maximum.peek();
+    }
+
+    private final Stack<E> m_maximum = new Stack<>();
 }
 
 public class GoogleTask
 {
     public static void main(String[] args)
     {
-        Stack<Boo> stack = new Stack<>();
+        StackWithMax<Integer> stack = new StackWithMax<>();
 
         for (int i = 0; i < 10; i++)
+            stack.push((int) (Math.random() * 100));
+
+        while (!stack.empty())
         {
-            int num = (int)(Math.random() * 100);
-
-            if (stack.empty())
-                stack.push(new Boo(num, num));
-            else
-                if (stack.peek().maximum < num )
-                    stack.push(new Boo(num, num));
-                else
-                    stack.push(new Boo(num, stack.peek().maximum));
+            int max = stack.getMaximum();
+            int element = stack.pop();
+            System.out.printf("number %d - maximum %d%n", element, max);
         }
-
-        for (Boo obj : stack)
-            System.out.println("number " + obj.number + " - maximum " + obj.maximum);
     }
 }
